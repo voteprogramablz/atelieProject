@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  laravel-git:
+    build:
+      context: .
+      dockerfile: Dockerfile.git
+    ports:
+      - "8000:8000"
+      - "2222:22"  # SSH para conectar com VS Code
+    env_file:
+      - .env.git
+    networks:
+      - laravel-network
+    volumes:
+      - git_data:/app  # Volume persistente para o código
+
+  mysql:
+    image: mysql:latest
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: a
+      MYSQL_DATABASE: qponto
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: qponto
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - laravel-network
+
+networks:
+  laravel-network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+  git_data:  # Volume para persistir o código clonado
